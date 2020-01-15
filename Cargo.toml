@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
 hecs = "0.2.7"
-quicksilver = "=0.4.0-alpha0"
+quicksilver = { git = "https://github.com/ryanisaacg/quicksilver" }
