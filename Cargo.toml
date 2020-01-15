@@ -1,5 +1,5 @@
 [package]
-name = "HorrorGame"
+name = "horror_game"
 version = "0.1.0"
 authors = ["Ryan Cirincione <ryancirincione@aol.com>"]
 edition = "2018"
