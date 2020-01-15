@@ -50,3 +50,10 @@ async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Resu
 }
 
 struct Player;
+
+struct LightSource {
+    center: Vector,
+    start_angle: f32,
+    end_angle: f32,
+    strength: f32
+}
