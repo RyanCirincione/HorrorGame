@@ -3,7 +3,7 @@
 use quicksilver::{
     geom::{Rectangle, Vector},
     graphics::{Color, Graphics},
-    lifecycle::{run, EventStream, Settings, Window},
+    lifecycle::{run, ElementState, Event::*, EventStream, Settings, Window},
     Result,
 };
 
@@ -19,20 +19,24 @@ fn main() {
 }
 
 async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Result<()> {
-    // Clear the screen to a blank, white color
-    gfx.clear(Color::WHITE);
-    // Paint a blue square with a red outline in the center of our screen
-    // It should have a top-left of (350, 100) and a size of (150, 100)
-    let rect = Rectangle::new(Vector::new(350.0, 100.0), Vector::new(100.0, 100.0));
-    gfx.fill_rect(&rect, Color::BLUE);
-    gfx.stroke_rect(&rect, Color::RED);
-    // Send the data to be drawn
-    gfx.present(&window)?;
+    let mut mouse_pos = Vector::ZERO;
     loop {
-        while let Some(_) = events.next_event().await {
+        while let Some(ev) = events.next_event().await {
             // input
+            match ev {
+                MouseMoved { position, .. } => {
+                    mouse_pos = position.into();
+                }
+                MouseInput { state: ElementState::Released, button, .. } => {
+                    // TODO handle mice
+                },
+                _ => ()
+            }
         }
         // update
-        //draw
+        // draw
+        gfx.clear(Color::WHITE);
+        gfx.fill_circle(mouse_pos, 10.0, Color::GREEN);
+        gfx.present(&window)?;
     }
 }
