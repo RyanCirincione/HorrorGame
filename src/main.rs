@@ -4,7 +4,7 @@ use hecs::*;
 use quicksilver::{
     geom::{Circle, Rectangle, Vector},
     graphics::{Color, Graphics},
-    lifecycle::{run, ElementState, Event::*, EventStream, Settings, Window},
+    lifecycle::{run, ElementState, Event::*, EventStream, MouseButton, Settings, Window},
     Result,
 };
 
@@ -31,8 +31,8 @@ async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Resu
                 MouseMoved { position, .. } => {
                     mouse_pos = position.into();
                 }
-                MouseInput { state: ElementState::Released, button, .. } => {
-                    // TODO handle mice
+                MouseInput { state: ElementState::Released, button: MouseButton::Left, .. } => {
+                    // TODO throw hook
                 },
                 _ => ()
             }
@@ -43,6 +43,8 @@ async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Resu
         }
         // draw
         gfx.clear(Color::WHITE);
+        // draw shadow map
+        // draw the world
         gfx.fill_circle(mouse_pos, 10.0, Color::GREEN);
         let player_bounds = world.get::<Circle>(player_id).unwrap();
         gfx.fill_circle(player_bounds.pos, player_bounds.radius, Color::BLUE);
