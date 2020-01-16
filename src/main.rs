@@ -39,11 +39,7 @@ async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Resu
             }
         }
         // update
-        for (_id, circle) in world.query::<&mut Circle>().iter() {
-            circle.pos += Vector::ONE;
-        }
         for (_id, (circle, vel, age)) in world.query::<(&mut Circle, &mut Vector, &mut u32)>().iter() {
-            println!("{}", vel);
             circle.pos += *vel;
             *age += 1;
             if *age == 30 {
