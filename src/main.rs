@@ -32,7 +32,8 @@ async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Resu
                     mouse_pos = position.into();
                 }
                 MouseInput { state: ElementState::Released, button: MouseButton::Left, .. } => {
-                    // TODO throw hook
+                    let player_bounds = *world.get::<Circle>(player_id).unwrap();
+                    spawn_hook(&mut world, player_bounds.pos, (mouse_pos - player_bounds.pos).normalize() * 10);
                 },
                 _ => ()
             }
@@ -40,6 +41,16 @@ async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Resu
         // update
         for (_id, circle) in world.query::<&mut Circle>().iter() {
             circle.pos += Vector::ONE;
+        }
+        for (_id, (circle, vel, age)) in world.query::<(&mut Circle, &mut Vector, &mut u32)>().iter() {
+            println!("{}", vel);
+            circle.pos += *vel;
+            *age += 1;
+            if *age == 30 {
+                *vel = *vel * -1;
+            } else if *age > 60 {
+                //TODO delete
+            }
         }
         // draw
         gfx.clear(Color::WHITE);
@@ -51,8 +62,18 @@ async fn app(window: Window, mut gfx: Graphics, mut events: EventStream) -> Resu
         for (_id, (circle, _tree)) in world.query::<(&Circle, &Tree)>().iter() {
             gfx.fill_circle(circle.pos, circle.radius, Color::RED);
         }
+        for (_id, (circle, _vel)) in world.query::<(&Circle, &Vector)>().iter() {
+            gfx.fill_circle(circle.pos, circle.radius, Color::YELLOW);
+        }
         gfx.present(&window)?;
     }
+}
+
+fn spawn_hook(world: &mut World, pos: Vector, vel: Vector) -> Entity {
+    let bounds = Circle::new(pos, 4.0);
+    let age: u32 = 0;
+
+    world.spawn((bounds, vel, age))
 }
 
 fn spawn_player(world: &mut World) -> Entity {
